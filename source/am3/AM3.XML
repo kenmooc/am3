@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>AM3</name>
+    </assembly>
+    <members>
+        <member name="T:AM3.Configuration">
+            <summary>
+            Provides helper methods for reading values from the configuration file.
+            </summary>
+        </member>
+        <member name="T:AM3.HttpModuleBase">
+            <summary>
+            Provides an abstract base class for <see cref="T:System.Web.IHttpModule"/> that
+            supports discovery from within partial trust environments.
+            Originally developed by Atif Aziz, http://www.raboof.com
+            </summary>
+        </member>
+        <member name="M:AM3.HttpModuleBase.OnInit(System.Web.HttpApplication)">
+            <summary>
+            Initializes the module and prepares it to handle requests.
+            </summary>
+        </member>
+        <member name="M:AM3.HttpModuleBase.OnDispose">
+            <summary>
+            Disposes of the resources (other than memory) used by the module.
+            </summary>
+        </member>
+        <member name="P:AM3.HttpModuleBase.SupportDiscoverability">
+            <summary>
+            Determines whether the module will be registered for discovery
+            in partial trust environments or not.
+            </summary>
+        </member>
+        <member name="M:AM3.MaintenanceModeModule.OnInit(System.Web.HttpApplication)">
+            <summary>
+            Initializes the module and prepares it to handle requests.
+            </summary>
+        </member>
+        <member name="M:AM3.MaintenanceModeModule.GetConfig">
+            <summary>
+            Gets the configuration object used by <see cref="M:AM3.MaintenanceModeModule.OnInit(System.Web.HttpApplication)"/> to read
+            the settings for module.
+            </summary>
+        </member>
+        <member name="M:AM3.Utility.MaskNullString(System.String)">
+            <summary>
+            Returns an empty string if the provided string is null
+            </summary>
+            <param name="s">The string to check</param>
+            <returns>string</returns>
+        </member>
+        <member name="M:AM3.Utility.MaskEmptyString(System.String,System.String)">
+            <summary>
+            Fills an empty string with the provided string
+            </summary>
+            <param name="s">The string to fill</param>
+            <param name="filler">The masking string</param>
+            <returns>string</returns>
+        </member>
+    </members>
+</doc>
