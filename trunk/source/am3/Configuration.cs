@@ -34,6 +34,10 @@ namespace AM3
 
     #endregion
 
+    /// <summary>
+    /// Provides helper methods for reading values from the configuration file.
+    /// </summary>
+    
     internal sealed class Configuration
     {
         internal const string GroupName = "am3";
