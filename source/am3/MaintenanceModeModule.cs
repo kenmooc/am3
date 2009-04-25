@@ -10,6 +10,7 @@ namespace AM3
     using System.Security;
     using System.Web;
     using IDictionary = System.Collections.IDictionary;
+    using System.Web.Security;
 
     #endregion
 
@@ -20,6 +21,7 @@ namespace AM3
         private string _landingPage;
         private string _allowedRoles;
         private string _allowedUsers;
+        private List<string> _allowedPaths;
 
         /// <summary>
         /// Initializes the module and prepares it to handle requests.
@@ -41,17 +43,71 @@ namespace AM3
             if (config == null)
                 return;
 
+            _allowedPaths = new List<string>();
+            
             //
-            // Extract the settings.
+            // Extract the settings and verify them if needed.
             //
 
             bool enabled = Convert.ToBoolean(GetSetting(config, "enabled", bool.FalseString));
             if (!enabled) return;
 
             string landingPage = GetSetting(config, "landingPage");
+            if (!IsValidPath(application, landingPage))
+                throw new ApplicationException(string.Format(
+                        "The provided landing page '{0}' is not valid.", landingPage));
+            _allowedPaths.Add(landingPage);
+
             string loginUrl = GetSetting(config, "loginUrl", string.Empty);
+            if (IsValidPath(application, loginUrl)) _allowedPaths.Add(loginUrl);
+
             string allowedRoles = GetSetting(config, "allowedRoles", string.Empty);
             string allowedUsers = GetSetting(config, "allowedUsers", string.Empty);
+
+            
+            // If everything goes as planned, hook up to the required event.
+
+            application.BeginRequest += new EventHandler(application_BeginRequest);
+        }
+
+        /// <summary>
+        /// The handler called when a request is passed on to the module
+        /// </summary>
+        
+        protected virtual void application_BeginRequest(object sender, EventArgs e)
+        {
+            HttpContext context = ((HttpApplication)sender).Context;
+            HttpRequest request = context.Request;
+            string requestedPath = request.Url.AbsolutePath;
+            string destinationPath = string.Empty;
+            
+            if (requestedPath.Equals(context.Server.MapPath(_landingPage)) || requestedPath.Equals(context.Server.MapPath(_loginUrl)))
+                destinationPath = requestedPath;
+            else if (context.User.Identity.IsAuthenticated)
+            {
+                string username = context.User.Identity.Name;
+                
+                // Check if the user belongs to allowed users list
+                if (_allowedUsers.Contains(username))
+                    destinationPath = requestedPath;
+                else
+                {
+                    string[] roles = _allowedRoles.Split(',');
+                    foreach (string role in roles)
+                    {
+                        if (Roles.IsUserInRole(username, role))
+                        {
+                            destinationPath = requestedPath;
+                            break;
+                        }
+                    }
+                }
+
+            }
+            else
+                destinationPath = _landingPage;
+
+            context.Response.Redirect(destinationPath);
         }
 
         /// <summary>
@@ -132,5 +188,25 @@ namespace AM3
 
             return value;
         }
+
+        private bool IsPathAllowed(string path)
+        {
+            return true;
+        }
+
+        private bool IsValidPath(HttpApplication application, string path)
+        {
+            bool exists = false;
+            try
+            {
+                application.Server.MapPath(path);
+                exists = true;
+            }
+            catch (Exception)
+            {
+            }
+            return exists;
+        }
+
     }
 }

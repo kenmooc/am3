@@ -37,10 +37,41 @@
             Initializes the module and prepares it to handle requests.
             </summary>
         </member>
+        <member name="M:AM3.MaintenanceModeModule.application_BeginRequest(System.Object,System.EventArgs)">
+            <summary>
+            The handler called when a request is passed on to the module
+            </summary>
+        </member>
         <member name="M:AM3.MaintenanceModeModule.GetConfig">
             <summary>
             Gets the configuration object used by <see cref="M:AM3.MaintenanceModeModule.OnInit(System.Web.HttpApplication)"/> to read
             the settings for module.
+            </summary>
+        </member>
+        <member name="P:AM3.MaintenanceModeModule.Enabled">
+            <summary>
+            Returns true if AM3 is enabled in the configuration file
+            </summary>
+        </member>
+        <member name="P:AM3.MaintenanceModeModule.LoginUrl">
+            <summary>
+            Gets the relative path to the web applications login page
+            </summary>
+        </member>
+        <member name="P:AM3.MaintenanceModeModule.LandingPage">
+            <summary>
+            Gets the relative path to the landing page that will be displayed to users
+            when the AM3 is enabled.
+            </summary>
+        </member>
+        <member name="P:AM3.MaintenanceModeModule.AllowedRoles">
+            <summary>
+            Gets a comma-delimited list of roles that will be allowed access.
+            </summary>
+        </member>
+        <member name="P:AM3.MaintenanceModeModule.AllowedUsers">
+            <summary>
+            Gets a comma-delimited list of users that will be allowed access.
             </summary>
         </member>
         <member name="M:AM3.Utility.MaskNullString(System.String)">
