@@ -20,7 +20,7 @@
             if (context == null)
                 throw new ArgumentNullException("context");
 
-            if (SupportDiscoverability)
+            //if (SupportDiscoverability)
                 //HttpModuleRegistry.RegisterInPartialTrust(context, this);
 
             OnInit(context);

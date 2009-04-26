@@ -22,6 +22,7 @@ namespace AM3
         private string _allowedRoles;
         private string _allowedUsers;
         private List<string> _allowedPaths;
+        private MembershipUser _currentUser;
 
         /// <summary>
         /// Initializes the module and prepares it to handle requests.
@@ -44,7 +45,7 @@ namespace AM3
                 return;
 
             _allowedPaths = new List<string>();
-            
+
             //
             // Extract the settings and verify them if needed.
             //
@@ -53,43 +54,59 @@ namespace AM3
             if (!enabled) return;
 
             string landingPage = GetSetting(config, "landingPage");
-            if (!IsValidPath(application, landingPage))
+            /*if (!IsValidPath(application, landingPage))
                 throw new ApplicationException(string.Format(
                         "The provided landing page '{0}' is not valid.", landingPage));
-            _allowedPaths.Add(landingPage);
+            _allowedPaths.Add(landingPage);*/
 
             string loginUrl = GetSetting(config, "loginUrl", string.Empty);
-            if (IsValidPath(application, loginUrl)) _allowedPaths.Add(loginUrl);
+            //if (IsValidPath(application, loginUrl)) _allowedPaths.Add(loginUrl);
 
             string allowedRoles = GetSetting(config, "allowedRoles", string.Empty);
             string allowedUsers = GetSetting(config, "allowedUsers", string.Empty);
 
-            
-            // If everything goes as planned, hook up to the required event.
+
+            // If everything goes as planned, hook up to the required events.
 
             application.BeginRequest += new EventHandler(application_BeginRequest);
+            application.AuthenticateRequest += new EventHandler(application_AuthenticateRequest);
+
+
+            //
+            // Finally, commit the state of the module if we got this far.
+            // Anything beyond this point should not cause an exception.
+            //
+
+            _enabled = enabled;
+            _allowedRoles = allowedRoles;
+            _allowedUsers = allowedUsers;
+            _landingPage = landingPage;
+            _loginUrl = loginUrl;
+
         }
+
+        
 
         /// <summary>
         /// The handler called when a request is passed on to the module
         /// </summary>
-        
+
         protected virtual void application_BeginRequest(object sender, EventArgs e)
         {
-            HttpContext context = ((HttpApplication)sender).Context;
-            HttpRequest request = context.Request;
-            string requestedPath = request.Url.AbsolutePath;
+            HttpApplication app = (HttpApplication)sender;
+            string reqUrl = app.Request.RawUrl.ToLower();
             string destinationPath = string.Empty;
+            string reqUrlAbsPath = app.Server.MapPath(reqUrl.ToLower());
             
-            if (requestedPath.Equals(context.Server.MapPath(_landingPage)) || requestedPath.Equals(context.Server.MapPath(_loginUrl)))
-                destinationPath = requestedPath;
-            else if (context.User.Identity.IsAuthenticated)
+            /*if (reqUrlAbsPath.Equals(app.Server.MapPath(_landingPage)) || reqUrlAbsPath.Equals(app.Server.MapPath(_loginUrl)))
+                return;
+            else if (app.Context.User.Identity.IsAuthenticated)
             {
-                string username = context.User.Identity.Name;
+                string username = app.Context.User.Identity.Name;
                 
                 // Check if the user belongs to allowed users list
                 if (_allowedUsers.Contains(username))
-                    destinationPath = requestedPath;
+                    return;
                 else
                 {
                     string[] roles = _allowedRoles.Split(',');
@@ -97,23 +114,41 @@ namespace AM3
                     {
                         if (Roles.IsUserInRole(username, role))
                         {
-                            destinationPath = requestedPath;
-                            break;
+                            return;
                         }
                     }
                 }
 
             }
             else
-                destinationPath = _landingPage;
+                destinationPath = _landingPage;*/
 
-            context.Response.Redirect(destinationPath);
+            if(_currentUser != null)
+                app.Response.Write(_currentUser.UserName);
+
+            //app.Response.Write(app.Server.MapPath(reqUrl) + " " + app.Server.MapPath(destinationPath.ToLower()));
+            /*if (!reqUrlAbsPath.Equals(app.Server.MapPath(destinationPath.ToLower())))
+            {
+                //app.Response.StatusCode = 301; // make a permanent redirect
+                app.Response.Redirect(destinationPath);
+                //app.Response.End();
+            }*/
+        }
+
+        /// <summary>
+        /// The handler called when the Identity of the user has been establised
+        /// </summary>
+        
+        protected override void application_AuthenticateRequest(object sender, EventArgs e)
+        {
+            HttpContext context = HttpContext.Current;
+            _currentUser = Membership.GetUser(context.User.Identity.Name);
         }
 
         /// <summary>
         /// Returns true if AM3 is enabled in the configuration file
         /// </summary>
-        
+
         protected virtual bool Enabled
         {
             get { return _enabled; }
@@ -122,7 +157,7 @@ namespace AM3
         /// <summary>
         /// Gets the relative path to the web applications login page
         /// </summary>
-        
+
         protected virtual string LoginUrl
         {
             get { return _loginUrl; }
@@ -132,7 +167,7 @@ namespace AM3
         /// Gets the relative path to the landing page that will be displayed to users
         /// when the AM3 is enabled.
         /// </summary>
-        
+
         protected virtual string LandingPage
         {
             get { return _landingPage; }
@@ -141,7 +176,7 @@ namespace AM3
         /// <summary>
         /// Gets a comma-delimited list of roles that will be allowed access.
         /// </summary>
-        
+
         protected virtual string AllowedRoles
         {
             get { return _allowedRoles; }
@@ -150,7 +185,7 @@ namespace AM3
         /// <summary>
         /// Gets a comma-delimited list of users that will be allowed access.
         /// </summary>
-        
+
         protected virtual string AllowedUsers
         {
             get { return _allowedUsers; }
@@ -163,7 +198,7 @@ namespace AM3
 
         protected virtual object GetConfig()
         {
-            return Configuration.GetSection("am3");
+            return Configuration.GetSubsection("maintenanceMode");
         }
 
         private static string GetSetting(IDictionary config, string name)
