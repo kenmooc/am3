@@ -19,7 +19,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\..\bin\net-3.5\Debug\</OutputPath>
+    <OutputPath>..\..\bin\net-3.5\Debug\</OutputPath>
     <DefineConstants>TRACE;DEBUG;NET_3_5</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="Configuration.cs" />
     <Compile Include="HttpModuleBase.cs" />
+    <Compile Include="MaintenanceModeSectionHandler.cs" />
     <Compile Include="MaintenanceModeModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utility.cs" />

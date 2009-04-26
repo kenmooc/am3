@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "am3", "..\..\am3\am3.csproj", "{F7A75D2D-0CCB-4D97-927C-D23359FAA487}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AM3TestSite", "..\..\AM3TestSite\AM3TestSite.csproj", "{002E6097-37A7-46B0-96BF-4A603FF51E9B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -13,6 +15,10 @@ Global
 		{F7A75D2D-0CCB-4D97-927C-D23359FAA487}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F7A75D2D-0CCB-4D97-927C-D23359FAA487}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F7A75D2D-0CCB-4D97-927C-D23359FAA487}.Release|Any CPU.Build.0 = Release|Any CPU
+		{002E6097-37A7-46B0-96BF-4A603FF51E9B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{002E6097-37A7-46B0-96BF-4A603FF51E9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{002E6097-37A7-46B0-96BF-4A603FF51E9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{002E6097-37A7-46B0-96BF-4A603FF51E9B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
