@@ -139,7 +139,7 @@ namespace AM3
         /// The handler called when the Identity of the user has been establised
         /// </summary>
         
-        protected override void application_AuthenticateRequest(object sender, EventArgs e)
+        protected virtual void application_AuthenticateRequest(object sender, EventArgs e)
         {
             HttpContext context = HttpContext.Current;
             _currentUser = Membership.GetUser(context.User.Identity.Name);
