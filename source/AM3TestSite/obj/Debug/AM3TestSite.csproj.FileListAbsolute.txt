@@ -6,3 +6,5 @@ F:\My Stuff\Development\ASP.NET\am3\source\AM3TestSite\bin\AM3.xml
 F:\My Stuff\Development\ASP.NET\am3\source\AM3TestSite\obj\Debug\ResolveAssemblyReference.cache
 F:\My Stuff\Development\ASP.NET\am3\source\AM3TestSite\obj\Debug\AM3TestSite.dll
 F:\My Stuff\Development\ASP.NET\am3\source\AM3TestSite\obj\Debug\AM3TestSite.pdb
+F:\My Stuff\Development\ASP.NET\am3\source\AM3TestSite\bin\Altairis.Web.Security.dll
+F:\My Stuff\Development\ASP.NET\am3\source\AM3TestSite\bin\Altairis.Web.Security.pdb

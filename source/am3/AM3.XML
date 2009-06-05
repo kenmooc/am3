@@ -42,6 +42,11 @@
             The handler called when a request is passed on to the module
             </summary>
         </member>
+        <member name="M:AM3.MaintenanceModeModule.application_AuthenticateRequest(System.Object,System.EventArgs)">
+            <summary>
+            The handler called when the Identity of the user has been establised
+            </summary>
+        </member>
         <member name="M:AM3.MaintenanceModeModule.GetConfig">
             <summary>
             Gets the configuration object used by <see cref="M:AM3.MaintenanceModeModule.OnInit(System.Web.HttpApplication)"/> to read
