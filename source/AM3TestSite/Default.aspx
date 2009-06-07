@@ -9,7 +9,7 @@
 <body>
     <form id="form1" runat="server">
     <div>
-    YOu have been granted access.
+    You have been granted access.
     </div>
     </form>
 </body>

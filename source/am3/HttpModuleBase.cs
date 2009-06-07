@@ -19,9 +19,9 @@
         {
             if (context == null)
                 throw new ArgumentNullException("context");
-
-            //if (SupportDiscoverability)
-                //HttpModuleRegistry.RegisterInPartialTrust(context, this);
+            
+            if (SupportDiscoverability)
+                HttpModuleRegistry.RegisterInPartialTrust(context, this);
 
             OnInit(context);
         }

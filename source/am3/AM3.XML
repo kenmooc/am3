@@ -53,6 +53,12 @@
             the settings for module.
             </summary>
         </member>
+        <member name="P:AM3.MaintenanceModeModule.SupportDiscoverability">
+            <summary>
+            Determines whether the module will be registered for discovery
+            in partial trust environments or not.
+            </summary>
+        </member>
         <member name="P:AM3.MaintenanceModeModule.Enabled">
             <summary>
             Returns true if AM3 is enabled in the configuration file

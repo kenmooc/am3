@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="Configuration.cs" />
     <Compile Include="HttpModuleBase.cs" />
+    <Compile Include="HttpModuleRegistry.cs" />
     <Compile Include="MaintenanceModeSectionHandler.cs" />
     <Compile Include="MaintenanceModeModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

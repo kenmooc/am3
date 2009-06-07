@@ -11,11 +11,13 @@ namespace AM3
     using System.Web;
     using IDictionary = System.Collections.IDictionary;
     using System.Web.Security;
+    using System.Diagnostics;
 
     #endregion
 
     public class MaintenanceModeModule : HttpModuleBase
     {
+        private HttpApplication _currentApplication;
         private bool _enabled;
         private string _loginUrl;
         private string _landingPage;
@@ -23,6 +25,7 @@ namespace AM3
         private string _allowedUsers;
         private List<string> _allowedPaths;
         private MembershipUser _currentUser;
+        private string _requestedUrlAbsolutePath;
 
         /// <summary>
         /// Initializes the module and prepares it to handle requests.
@@ -68,8 +71,9 @@ namespace AM3
 
             // If everything goes as planned, hook up to the required events.
 
-            application.BeginRequest += new EventHandler(application_BeginRequest);
             application.AuthenticateRequest += new EventHandler(application_AuthenticateRequest);
+            application.AuthorizeRequest += new EventHandler(application_AuthorizeRequest);
+            application.BeginRequest += new EventHandler(application_BeginRequest);
 
 
             //
@@ -77,6 +81,7 @@ namespace AM3
             // Anything beyond this point should not cause an exception.
             //
 
+            _currentApplication = application;
             _enabled = enabled;
             _allowedRoles = allowedRoles;
             _allowedUsers = allowedUsers;
@@ -85,7 +90,17 @@ namespace AM3
 
         }
 
-        
+
+
+        /// <summary>
+        /// Determines whether the module will be registered for discovery
+        /// in partial trust environments or not.
+        /// </summary>
+
+        protected override bool SupportDiscoverability
+        {
+            get { return true; }
+        }
 
         /// <summary>
         /// The handler called when a request is passed on to the module
@@ -93,56 +108,50 @@ namespace AM3
 
         protected virtual void application_BeginRequest(object sender, EventArgs e)
         {
-            HttpApplication app = (HttpApplication)sender;
-            string reqUrl = app.Request.RawUrl.ToLower();
-            string destinationPath = string.Empty;
-            string reqUrlAbsPath = app.Server.MapPath(reqUrl.ToLower());
-            
-            /*if (reqUrlAbsPath.Equals(app.Server.MapPath(_landingPage)) || reqUrlAbsPath.Equals(app.Server.MapPath(_loginUrl)))
-                return;
-            else if (app.Context.User.Identity.IsAuthenticated)
-            {
-                string username = app.Context.User.Identity.Name;
-                
-                // Check if the user belongs to allowed users list
-                if (_allowedUsers.Contains(username))
-                    return;
-                else
-                {
-                    string[] roles = _allowedRoles.Split(',');
-                    foreach (string role in roles)
-                    {
-                        if (Roles.IsUserInRole(username, role))
-                        {
-                            return;
-                        }
-                    }
-                }
-
-            }
-            else
-                destinationPath = _landingPage;*/
-
-            if(_currentUser != null)
-                app.Response.Write(_currentUser.UserName);
-
-            //app.Response.Write(app.Server.MapPath(reqUrl) + " " + app.Server.MapPath(destinationPath.ToLower()));
-            /*if (!reqUrlAbsPath.Equals(app.Server.MapPath(destinationPath.ToLower())))
-            {
-                //app.Response.StatusCode = 301; // make a permanent redirect
-                app.Response.Redirect(destinationPath);
-                //app.Response.End();
-            }*/
+            _currentApplication.Context.Trace.Warn("-- Inside Begin Request --");
         }
 
         /// <summary>
         /// The handler called when the Identity of the user has been establised
         /// </summary>
-        
+
         protected virtual void application_AuthenticateRequest(object sender, EventArgs e)
         {
-            HttpContext context = HttpContext.Current;
-            _currentUser = Membership.GetUser(context.User.Identity.Name);
+            _currentApplication.Context.Trace.Warn("-- Inside Authenticate --");
+
+            string reqUrl = _currentApplication.Request.Path;
+            string destinationPath = string.Empty;
+
+            if (reqUrl.Contains("trace.axd")) return;
+
+            _requestedUrlAbsolutePath = _currentApplication.Server.MapPath(reqUrl);
+
+            if (String.Compare(_currentApplication.Server.MapPath(LoginUrl), _requestedUrlAbsolutePath, true) == 0 ||
+                String.Compare(_currentApplication.Server.MapPath(LandingPage), _requestedUrlAbsolutePath, true) == 0)
+                return;
+
+            try
+            {
+                HttpContext context = HttpContext.Current;
+                _currentUser = Membership.GetUser(context.User.Identity.Name);
+                
+                if (_currentUser != null && IsUserAllowed()) return;
+                else
+                {
+                    //
+                }
+
+            }
+            catch (Exception)
+            {
+                _currentApplication.Context.Trace.Warn("Current User: null");
+                _currentApplication.Response.Redirect(LandingPage);
+            }
+        }
+
+        protected virtual void application_AuthorizeRequest(object sender, EventArgs e)
+        {
+            _currentApplication.Context.Trace.Warn("Inside Authorize Request");
         }
 
         /// <summary>
@@ -241,6 +250,29 @@ namespace AM3
             {
             }
             return exists;
+        }
+
+        private bool IsUserAllowed()
+        {
+            _currentApplication.Context.Trace.Warn("--- Checking if user is allowed ---");
+            _currentApplication.Context.Trace.Warn("Current User: " + _currentUser.UserName);
+            _currentApplication.Context.Trace.Warn("Allowed Users: " + _allowedUsers);
+
+            if (_allowedUsers.Contains(_currentUser.UserName))
+                return true;
+
+            _currentApplication.Context.Trace.Warn("--- Checking if role is allowed ---");
+            string[] allowedRoles = _allowedRoles.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            foreach (string role in allowedRoles)
+            {
+                _currentApplication.Context.Trace.Warn("Role: " + role);
+                if (Roles.IsUserInRole(_currentUser.UserName, role.Trim())) return true;
+            }
+
+
+            _currentApplication.Context.Trace.Warn("--- User is not allowed ---");
+
+            return false;
         }
 
     }
