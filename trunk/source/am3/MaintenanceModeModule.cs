@@ -57,10 +57,8 @@ namespace AM3
             if (!enabled) return;
 
             string landingPage = GetSetting(config, "landingPage");
-            /*if (!IsValidPath(application, landingPage))
-                throw new ApplicationException(string.Format(
-                        "The provided landing page '{0}' is not valid.", landingPage));
-            _allowedPaths.Add(landingPage);*/
+           
+            
 
             string loginUrl = GetSetting(config, "loginUrl", string.Empty);
             //if (IsValidPath(application, loginUrl)) _allowedPaths.Add(loginUrl);
@@ -109,6 +107,9 @@ namespace AM3
         protected virtual void application_BeginRequest(object sender, EventArgs e)
         {
             _currentApplication.Context.Trace.Warn("-- Inside Begin Request --");
+            if (!IsValidPath(_loginUrl)) { }
+            //throw new ApplicationException(string.Format(
+            //        "The provided landing page '{0}' is not valid URL.", landingPage));
         }
 
         /// <summary>
@@ -238,16 +239,24 @@ namespace AM3
             return true;
         }
 
+        private bool IsValidPath(string path)
+        {
+            return IsValidPath(_currentApplication, path);
+        }
+
         private bool IsValidPath(HttpApplication application, string path)
         {
+            application.Context.Trace.Warn(" -- Inside IsValidPath -- ");
             bool exists = false;
             try
             {
                 application.Server.MapPath(path);
                 exists = true;
+                application.Context.Trace.Warn("Exists: " + exists);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                application.Context.Trace.Warn(" -- Inside IsValidPath: " + ex.Message);
             }
             return exists;
         }
