@@ -1,11 +1,12 @@
 #region License, Terms and Author(s)
 //
-// ELMAH - Error Logging Modules and Handlers for ASP.NET
+// AM3 - ASP.NET Maintenance Mode Module
 // Copyright (c) 2007 Atif Aziz. All rights reserved.
 //
 //  Author(s):
 //
 //      Atif Aziz, http://www.raboof.com
+//      Raihan Iqbal, http://www.raihaniqbal.net
 //
 // This library is free software; you can redistribute it and/or modify it 
 // under the terms of the New BSD License, a copy of which should have 

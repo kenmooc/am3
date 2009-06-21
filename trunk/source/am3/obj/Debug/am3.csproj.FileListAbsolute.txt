@@ -2,7 +2,6 @@ F:\My Stuff\Development\ASP.NET\bin\net-3.5\Debug\AM3.dll.config
 F:\My Stuff\Development\ASP.NET\bin\net-3.5\Debug\AM3.dll
 F:\My Stuff\Development\ASP.NET\bin\net-3.5\Debug\AM3.pdb
 F:\My Stuff\Development\ASP.NET\bin\net-3.5\Debug\AM3.XML
-F:\My Stuff\Development\ASP.NET\am3\bin\net-3.5\Debug\AM3.dll.config
 F:\My Stuff\Development\ASP.NET\am3\bin\net-3.5\Debug\AM3.dll
 F:\My Stuff\Development\ASP.NET\am3\bin\net-3.5\Debug\AM3.pdb
 F:\My Stuff\Development\ASP.NET\am3\bin\net-3.5\Debug\AM3.XML
