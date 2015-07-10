@@ -1,0 +1,1 @@
+**ASP.NET Maintenance Mode Module(AM3)**  is an HTTP module that puts your ASP.NET site into maintenance mode. The advantage of using this module instead of the classic app\_offline.htm is that you as an administrator can have access to site while others dont!
